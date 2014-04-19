@@ -46,7 +46,7 @@ const (
   NoDoubleQuote = iota
 )
 
-// Default dialect
+// Default dialect.
 const (
   DefaultDelimiter = " "
   DefaultQuoting = QuoteMinimal
