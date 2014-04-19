@@ -44,9 +44,17 @@ To modify CSV dialect, have a look at ``csv.Dialect``. It supports changing:
 * how quote character escaping should be done - using double escape, or using a
   custom escape character.
 
-Have a look at ``csv_test.go`` for example on how to use these. All values
-above have sane defaults (that makes the module behave the same as the ``csv``
-module in the Go standard library).
+Have a look at documentation_ or ``csv_test.go`` for example on how to use
+these. All values above have sane defaults (that makes the module behave the
+same as the ``csv`` module in the Go standard library).
+
+.. _documentation: http://godoc.org/github.com/JensRantil/go-csv
+
+Documentation
+-------------
+Package documentation can be found here_.
+
+.. _here: http://godoc.org/github.com/JensRantil/go-csv
 
 Why was this developed?
 -----------------------
