@@ -30,6 +30,7 @@ type CsvWriter interface {
   WriteAll(records [][]string) error
 }
 
+// Values Dialect.Quoting can take.
 const (
   QuoteDefault = iota  // See DefaultQuoting.
   QuoteAll = iota
@@ -38,6 +39,7 @@ const (
   QuoteNone = iota
 )
 
+// Values Dialect.DoubleQuote can take.
 const (
   DoubleQuoteDefault = iota  // See DefaultDoubleQuote.
   DoDoubleQuote = iota
