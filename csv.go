@@ -9,6 +9,7 @@ import (
 	"bufio"
 	"io"
 	"strings"
+	"unicode"
 )
 
 // A helper interface for a general CSV writer. Adheres to encoding/csv Writer
@@ -133,16 +134,12 @@ func (w Writer) writeDelimiter() error {
 	return w.writeString(w.opts.Delimiter)
 }
 
-func isDigit(s rune) bool {
-	return s >= '0' && s <= '9'
-}
-
 func isNumeric(s string) bool {
 	if len(s) == 0 {
 		return false
 	}
 	for _, r := range s {
-		if !isDigit(r) {
+		if !unicode.IsDigit(r) {
 			return false
 		}
 	}
