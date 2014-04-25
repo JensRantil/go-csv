@@ -49,7 +49,7 @@ const (
 
 // Default dialect.
 const (
-	DefaultDelimiter      = " "
+	DefaultDelimiter      = ' '
 	DefaultQuoting        = QuoteMinimal
 	DefaultDoubleQuote    = DoDoubleQuote
 	DefaultEscapeChar     = '\\'
@@ -58,7 +58,7 @@ const (
 )
 
 type Dialect struct {
-	Delimiter      string
+	Delimiter      rune
 	Quoting        int
 	DoubleQuote    int
 	EscapeChar     rune
@@ -67,7 +67,7 @@ type Dialect struct {
 }
 
 func (wo *Dialect) setDefaults() {
-	if wo.Delimiter == "" {
+	if wo.Delimiter == 0 {
 		wo.Delimiter = DefaultDelimiter
 	}
 	if wo.Quoting == QuoteDefault {
@@ -131,7 +131,7 @@ func (w Writer) writeString(s string) error {
 }
 
 func (w Writer) writeDelimiter() error {
-	return w.writeString(w.opts.Delimiter)
+	return w.writeRune(w.opts.Delimiter)
 }
 
 func isNumeric(s string) bool {
@@ -157,7 +157,7 @@ func (w Writer) fieldNeedsQuote(field string) bool {
 	case QuoteMinimal:
 		// TODO: Can be improved by making a single search with trie.
 		// See https://docs.python.org/2/library/csv.html#csv.QUOTE_MINIMAL for info on this.
-		return strings.Contains(field, w.opts.LineTerminator) || strings.Contains(field, w.opts.Delimiter) || strings.ContainsRune(field, w.opts.QuoteChar)
+		return strings.Contains(field, w.opts.LineTerminator) || strings.ContainsRune(field, w.opts.Delimiter) || strings.ContainsRune(field, w.opts.QuoteChar)
 	default:
 		panic("Unexpected quoting.")
 	}

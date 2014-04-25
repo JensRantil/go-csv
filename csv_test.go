@@ -24,7 +24,7 @@ func TestInterfaceAdherence(t *testing.T) {
 
 // Execute a quicktest for a specific quoting.
 func testQuick(t *testing.T, quoting int) {
-	f := func(records [][]string, doubleQuote bool, escapeChar, quoteChar rune, del, lt string) bool {
+	f := func(records [][]string, doubleQuote bool, escapeChar, del, quoteChar rune, lt string) bool {
 		b1 := new(bytes.Buffer)
 		dialect := Dialect{
 			Quoting:        quoting,
