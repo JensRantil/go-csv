@@ -6,6 +6,8 @@ package csv
 import (
 	"bytes"
 	oldcsv "encoding/csv"
+	"io"
+	"reflect"
 	"testing"
 	"testing/quick"
 )
@@ -205,5 +207,110 @@ func TestNewLineRecord(t *testing.T) {
 	w.Flush()
 	if s := string(b.Bytes()); s != "a \"he\nllo\" \"b c\"\n" {
 		t.Error("Unexpected output:", s)
+	}
+}
+
+func TestUnReader(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	b.WriteString("a,b,c\n")
+	r := NewUnReader(b)
+	if ru, _, _ := r.ReadRune(); ru != 'a' {
+		t.Error("Unexpected char:", ru, "Expected:", 'a')
+	}
+	if ok, _ := r.NextIsString(",b,c"); !ok {
+		t.Error("Unexpected next string.")
+	}
+	r.UnreadRune('d')
+	if ok, _ := r.NextIsString("d,b,c"); !ok {
+		t.Error("Unreading failed.")
+	}
+	if ok, _ := r.NextIsString("b,c"); ok {
+		t.Error("Unexpected next string.")
+	}
+	if ru, _, _ := r.ReadRune(); ru != 'd' {
+		t.Error("Unexpected char:", ru, "Expected:", 'd')
+	}
+}
+
+func testReadingSingleLine(t *testing.T, r *Reader, expected []string) error {
+	record, err := r.Read()
+	if c := len(record); c != len(expected) {
+		t.Fatal("Wrong number of fields:", c, "Expected:", len(expected))
+	}
+	if !reflect.DeepEqual(record, expected) {
+		t.Error("Incorrect records.")
+		t.Error(record)
+		t.Error(expected)
+	}
+	return err
+}
+
+func TestReadingSingleFieldLine(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	b.WriteString("a\n")
+	r := NewReader(b)
+
+	err := testReadingSingleLine(t, r, []string{"a"})
+	if err != nil && err != io.EOF {
+		t.Error("Unexpected error:", err)
+	}
+}
+
+func TestReadingSingleLine(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	b.WriteString("a b c\n")
+	r := NewReader(b)
+
+	err := testReadingSingleLine(t, r, []string{"a", "b", "c"})
+	if err != nil && err != io.EOF {
+		t.Error("Unexpected error:", err)
+	}
+}
+
+func TestReadingTwoLines(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	b.WriteString("a b c\nd e f\n")
+	r := NewReader(b)
+	err := testReadingSingleLine(t, r, []string{"a", "b", "c"})
+	if err != nil {
+		t.Error("Unexpected error:", err)
+	}
+	err = testReadingSingleLine(t, r, []string{"d", "e", "f"})
+	if err != nil && err != io.EOF {
+		t.Error("Expected EOF, but got:", err)
+	}
+}
+
+func TestReadingBasicCommaDelimitedFile(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	b.WriteString("\"b\"\n")
+	r := NewReader(b)
+
+	err := testReadingSingleLine(t, r, []string{"b"})
+	if err != nil && err != io.EOF {
+		t.Error("Unexpected error:", err)
+	}
+}
+
+func TestReadingCommaDelimitedFile(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	b.WriteString("a \"b\" c\n")
+	r := NewReader(b)
+
+	err := testReadingSingleLine(t, r, []string{"a", "b", "c"})
+	if err != nil && err != io.EOF {
+		t.Error("Unexpected error:", err)
 	}
 }
