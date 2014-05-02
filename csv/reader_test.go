@@ -5,10 +5,23 @@ package csv
 
 import (
 	"bytes"
+	oldcsv "encoding/csv"
 	"io"
 	"reflect"
 	"testing"
 )
+
+func TestReaderInterface(t *testing.T) {
+	t.Parallel()
+
+	var iface CsvReader
+	iface = NewReader(new(bytes.Buffer))
+	iface = NewDialectReader(new(bytes.Buffer), Dialect{})
+	iface = oldcsv.NewReader(new(bytes.Buffer))
+
+	// To get rid of compile-time warning that this variable is not used.
+	iface.Read()
+}
 
 func TestUnReader(t *testing.T) {
 	t.Parallel()
@@ -112,5 +125,33 @@ func TestReadingCommaDelimitedFile(t *testing.T) {
 	err := testReadingSingleLine(t, r, []string{"a", "b", "c"})
 	if err != nil && err != io.EOF {
 		t.Error("Unexpected error:", err)
+	}
+}
+
+func TestReadAll(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	b.WriteString("a \"b\" c\nd e \"f\"\n")
+	r := NewReader(b)
+
+	data, err := r.ReadAll()
+	if err != nil {
+		t.Error("Unexpected error:", err)
+	}
+	equals := reflect.DeepEqual(data, [][]string{
+		{
+			"a",
+			"b",
+			"c",
+		},
+		{
+			"d",
+			"e",
+			"f",
+		},
+	})
+	if !equals {
+		t.Error("Unexpected output:", data)
 	}
 }

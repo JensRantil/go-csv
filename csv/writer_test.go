@@ -10,7 +10,7 @@ import (
 	"testing/quick"
 )
 
-func TestInterfaceAdherence(t *testing.T) {
+func TestWriterInterface(t *testing.T) {
 	t.Parallel()
 
 	var iface CsvWriter
