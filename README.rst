@@ -1,5 +1,8 @@
 CSV
 ===
+.. image:: https://secure.travis-ci.org/JensRantil/go-csv.png?branch=develop
+   :target: http://travis-ci.org/#!/JensRantil/go-csv
+
 A Go CSV_ implementation inspired by `Python's CSV module`_. Supports custom
 CSV formats. Currently only writing CSV files is supported.
 
