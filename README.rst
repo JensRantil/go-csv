@@ -3,15 +3,20 @@ CSV
 .. image:: https://secure.travis-ci.org/JensRantil/go-csv.png?branch=develop
    :target: http://travis-ci.org/#!/JensRantil/go-csv
 
-A Go CSV_ implementation inspired by `Python's CSV module`_. Supports custom
-CSV formats. Currently only writing CSV files is supported.
+A Go CSV_ implementation inspired by `Python's CSV module`_. It supports
+various CSV dialects (see below) and is fully backward compatible with the
+`encoding/csv`_ package in the Go standard library.
 
 .. _CSV: https://en.wikipedia.org/wiki/Comma-separated_values
 .. _Python's CSV module: https://docs.python.org/2/library/csv.html
+.. _encording/csv: http://golang.org/pkg/encoding/csv/
 
 Examples
 --------
-Here's a basic example::
+
+Writing
+~~~~~~~
+Here's a basic writing example::
 
     f, err := os.Create("output.csv")
     checkError(err)
@@ -28,7 +33,32 @@ Here's a basic example::
     w.Flush()
     // output.csv will now contains the line "a b c" with a trailing newline.
 
-To modify CSV dialect, have a look at ``csv.Dialect``. It supports changing:
+Reading
+~~~~~~~
+Here's a basic reading example::
+
+    f, err := os.Open('myfile.csv')
+    checkError(err)
+    defer func() {
+      err := f.Close()
+      checkError(err)
+    }
+
+    r := NewReader(f)
+    for {
+      fields, err := r.Read()
+      if err == io.EOF {
+        break
+      }
+      checkOtherErrors(err)
+      handleFields(fields)
+    }
+
+CSV dialects
+------------
+To modify CSV dialect, have a look at ``csv.Dialect``,
+``csv.NewDialectWriter(...)`` and ``csv.NewDialectReader(...)``. It supports
+changing:
 
 * separator/delimiter.
 
