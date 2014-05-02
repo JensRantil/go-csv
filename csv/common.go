@@ -6,7 +6,7 @@
 package csv
 
 import (
-  "unicode"
+	"unicode"
 )
 
 // Values Dialect.Quoting can take.
