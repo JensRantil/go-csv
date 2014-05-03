@@ -63,7 +63,7 @@ func NewReader(r io.Reader) *Reader {
 	return NewDialectReader(r, opts)
 }
 
-// Create a custom CSV writer.
+// Create a custom CSV reader.
 func NewDialectReader(r io.Reader, opts Dialect) *Reader {
 	opts.setDefaults()
 	return &Reader{
