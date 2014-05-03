@@ -1,6 +1,6 @@
 CSV
 ===
-.. image:: https://secure.travis-ci.org/JensRantil/go-csv.png?branch=develop
+.. image:: https://secure.travis-ci.org/JensRantil/go-csv.png?branch=master
    :target: http://travis-ci.org/#!/JensRantil/go-csv
 
 A Go CSV_ implementation inspired by `Python's CSV module`_. It supports
