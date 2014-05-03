@@ -2,7 +2,7 @@
 // governed by a BSD-style license that can be found in the LICENSE file.
 
 // A CSV implementation inspired by Python's CSV module. Supports custom CSV
-// formats. Currently only writing CSV files is supported.
+// formats.
 package csv
 
 import (
