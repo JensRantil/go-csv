@@ -9,7 +9,7 @@ various CSV dialects (see below) and is fully backward compatible with the
 
 .. _CSV: https://en.wikipedia.org/wiki/Comma-separated_values
 .. _Python's CSV module: https://docs.python.org/2/library/csv.html
-.. _encording/csv: http://golang.org/pkg/encoding/csv/
+.. _encoding/csv: http://golang.org/pkg/encoding/csv/
 
 Examples
 --------
