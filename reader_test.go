@@ -29,7 +29,7 @@ func TestUnReader(t *testing.T) {
 
 	b := new(bytes.Buffer)
 	b.WriteString("a,b,c\n")
-	r := NewUnReader(b)
+	r := newUnreader(b)
 	if ru, _, _ := r.ReadRune(); ru != 'a' {
 		t.Error("Unexpected char:", ru, "Expected:", 'a')
 	}

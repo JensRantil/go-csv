@@ -32,7 +32,7 @@ type unReader struct {
 	b *bytes.Buffer
 }
 
-func NewUnReader(r io.Reader) *unReader {
+func newUnreader(r io.Reader) *unReader {
 	return &unReader{
 		r: bufio.NewReader(r),
 		b: new(bytes.Buffer),
@@ -83,7 +83,7 @@ func NewDialectReader(r io.Reader, opts Dialect) *Reader {
 	opts.setDefaults()
 	return &Reader{
 		opts: opts,
-		r:    NewUnReader(r),
+		r:    newUnreader(r),
 	}
 }
 
