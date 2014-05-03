@@ -23,7 +23,7 @@ func TestWriterInterface(t *testing.T) {
 }
 
 // Execute a quicktest for a specific quoting.
-func testQuick(t *testing.T, quoting int) {
+func testWriterQuick(t *testing.T, quoting int) {
 	f := func(records [][]string, doubleQuote bool, escapeChar, del, quoteChar rune, lt string) bool {
 		b1 := new(bytes.Buffer)
 		dialect := Dialect{
@@ -56,13 +56,13 @@ func testQuick(t *testing.T, quoting int) {
 }
 
 // Run quicktest using various quoting types
-func TestQuick(t *testing.T) {
+func TestWriterQuick(t *testing.T) {
 	t.Parallel()
 
-	testQuick(t, QuoteAll)
-	testQuick(t, QuoteNone)
-	testQuick(t, QuoteMinimal)
-	testQuick(t, QuoteNonNumeric)
+	testWriterQuick(t, QuoteAll)
+	testWriterQuick(t, QuoteNone)
+	testWriterQuick(t, QuoteMinimal)
+	testWriterQuick(t, QuoteNonNumeric)
 }
 
 func TestBasic(t *testing.T) {

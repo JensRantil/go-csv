@@ -9,6 +9,7 @@ import (
 	"io"
 	"reflect"
 	"testing"
+	"testing/quick"
 )
 
 func TestReaderInterface(t *testing.T) {
@@ -154,4 +155,49 @@ func TestReadAll(t *testing.T) {
 	if !equals {
 		t.Error("Unexpected output:", data)
 	}
+}
+
+func testReaderQuick(t *testing.T, quoting int) {
+	f := func(records [][]string, doubleQuote bool, escapeChar, del, quoteChar rune, lt string) bool {
+		dialect := Dialect{
+			Quoting:        quoting,
+			EscapeChar:     escapeChar,
+			QuoteChar:      quoteChar,
+			Delimiter:      del,
+			LineTerminator: lt,
+		}
+		if doubleQuote {
+			dialect.DoubleQuote = DoDoubleQuote
+		} else {
+			dialect.DoubleQuote = NoDoubleQuote
+		}
+		b := new(bytes.Buffer)
+		w := NewDialectWriter(b, dialect)
+		w.WriteAll(records)
+
+		r := NewDialectReader(b, dialect)
+		data, err := r.ReadAll()
+		if err != nil {
+			t.Error("Error when reading CSV:", err)
+			return false
+		}
+
+		equal := reflect.DeepEqual(records, data)
+		if !equal {
+			t.Error("Not equal:", records, data)
+		}
+		return equal
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Test writing to and then reading from using various CSV dialects.
+func TestReaderQuick(t *testing.T) {
+	t.Parallel()
+
+	testWriterQuick(t, QuoteAll)
+	testWriterQuick(t, QuoteMinimal)
+	testWriterQuick(t, QuoteNonNumeric)
 }
