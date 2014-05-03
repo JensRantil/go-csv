@@ -44,9 +44,8 @@ func NewUnReader(r io.Reader) *unReader {
 func (u *unReader) ReadRune() (rune, int, error) {
 	if u.b.Len() > 0 {
 		return u.b.ReadRune()
-	} else {
-		return u.r.ReadRune()
 	}
+	return u.r.ReadRune()
 }
 
 func (u *unReader) UnreadRune(r rune) {
@@ -106,6 +105,9 @@ func (r *Reader) ReadAll() ([][]string, error) {
 		}
 		allRows = append(allRows, fields)
 	}
+
+	// Required by Go 1.0 to compile. Unreachable code.
+	return allRows, nil
 }
 
 // Read reads one record from r. The record is a slice of strings with each
@@ -137,6 +139,9 @@ func (r *Reader) Read() ([]string, error) {
 			r.skipDelimiter()
 		}
 	}
+
+	// Required by Go 1.0 to compile. Unreachable code.
+	return record, nil
 }
 
 func (r *Reader) readField() (string, error) {
@@ -150,9 +155,8 @@ func (r *Reader) readField() (string, error) {
 
 	if char == r.opts.QuoteChar {
 		return r.readQuotedField()
-	} else {
-		return r.readUnquotedField()
 	}
+	return r.readUnquotedField()
 }
 
 func (r *Reader) nextIsLineTerminator() (bool, error) {
@@ -228,6 +232,9 @@ func (r *Reader) readQuotedField() (string, error) {
 			}
 		}
 	}
+
+	// Required by Go 1.0 to compile. Unreachable code.
+	return s.String(), nil
 }
 
 func (r *Reader) readUnquotedField() (string, error) {
@@ -252,4 +259,7 @@ func (r *Reader) readUnquotedField() (string, error) {
 			return s.String(), nil
 		}
 	}
+
+	// Required by Go 1.0 to compile. Unreachable code.
+	return s, nil
 }

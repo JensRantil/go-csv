@@ -70,9 +70,8 @@ func (w Writer) fieldNeedsQuote(field string) bool {
 		// TODO: Can be improved by making a single search with trie.
 		// See https://docs.python.org/2/library/csv.html#csv.QUOTE_MINIMAL for info on this.
 		return strings.Contains(field, w.opts.LineTerminator) || strings.ContainsRune(field, w.opts.Delimiter) || strings.ContainsRune(field, w.opts.QuoteChar)
-	default:
-		panic("Unexpected quoting.")
 	}
+	panic("Unexpected quoting.")
 }
 
 func (w Writer) writeRune(r rune) error {
@@ -86,9 +85,8 @@ func (w Writer) writeEscapeChar(r rune) error {
 		return w.writeRune(r)
 	case NoDoubleQuote:
 		return w.writeRune(w.opts.EscapeChar)
-	default:
-		panic("Unrecognized double quote type.")
 	}
+	panic("Unrecognized double quote type.")
 }
 
 func (w Writer) writeQuotedRune(r rune) error {
@@ -120,9 +118,8 @@ func (w Writer) writeQuoted(field string) error {
 func (w Writer) writeField(field string) error {
 	if w.fieldNeedsQuote(field) {
 		return w.writeQuoted(field)
-	} else {
-		return w.writeString(field)
 	}
+	return w.writeString(field)
 }
 
 func (w Writer) writeNewline() error {
