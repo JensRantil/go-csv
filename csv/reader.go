@@ -261,5 +261,5 @@ func (r *Reader) readUnquotedField() (string, error) {
 	}
 
 	// Required by Go 1.0 to compile. Unreachable code.
-	return s, nil
+	return s.String(), nil
 }
