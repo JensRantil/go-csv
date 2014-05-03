@@ -232,7 +232,7 @@ func (r *Reader) readQuotedField() (string, error) {
 
 func (r *Reader) readUnquotedField() (string, error) {
 	// TODO: Use bytes.Buffer
-	s := ""
+	s := bytes.Buffer{}
 	for {
 		char, _, err := r.r.ReadRune()
 		if err != nil || char == r.opts.Delimiter {
@@ -244,12 +244,12 @@ func (r *Reader) readUnquotedField() (string, error) {
 			// compatible with readQuotedField().
 			r.r.UnreadRune(char)
 
-			return s, err
+			return s.String(), err
 		} else {
-			s = s + string(char)
+			s.WriteRune(char)
 		}
 		if ok, _ := r.nextIsLineTerminator(); ok {
-			return s, nil
+			return s.String(), nil
 		}
 	}
 }
