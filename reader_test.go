@@ -5,24 +5,11 @@ package csv
 
 import (
 	"bytes"
-	oldcsv "encoding/csv"
 	"io"
 	"reflect"
 	"testing"
 	"testing/quick"
 )
-
-func TestReaderInterface(t *testing.T) {
-	t.Parallel()
-
-	var iface CsvReader
-	iface = NewReader(new(bytes.Buffer))
-	iface = NewDialectReader(new(bytes.Buffer), Dialect{})
-	iface = oldcsv.NewReader(new(bytes.Buffer))
-
-	// To get rid of compile-time warning that this variable is not used.
-	iface.Read()
-}
 
 func TestUnReader(t *testing.T) {
 	t.Parallel()

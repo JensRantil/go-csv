@@ -5,22 +5,9 @@ package csv
 
 import (
 	"bytes"
-	oldcsv "encoding/csv"
 	"testing"
 	"testing/quick"
 )
-
-func TestWriterInterface(t *testing.T) {
-	t.Parallel()
-
-	var iface CsvWriter
-	iface = NewWriter(new(bytes.Buffer))
-	iface = NewDialectWriter(new(bytes.Buffer), Dialect{})
-	iface = oldcsv.NewWriter(new(bytes.Buffer))
-
-	// To get rid of compile-time warning that this variable is not used.
-	iface.Flush()
-}
 
 // Execute a quicktest for a specific quoting.
 func testWriterQuick(t *testing.T, quoting int) {
