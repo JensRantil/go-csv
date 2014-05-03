@@ -1,8 +1,6 @@
 // Copyright 2014 Jens Rantil. All rights reserved.  Use of this source code is
 // governed by a BSD-style license that can be found in the LICENSE file.
 
-// A CSV implementation inspired by Python's CSV module. Supports custom CSV
-// formats. Currently only writing CSV files is supported.
 package csv
 
 import (
