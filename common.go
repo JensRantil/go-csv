@@ -37,6 +37,9 @@ const (
 	DefaultLineTerminator = "\n"
 )
 
+// A Dialect specifies the format of a CSV file. This structure is used by a
+// Reader or Writer to know how to operate on the file they are
+// reading/writing.
 type Dialect struct {
 	// The delimiter that separates each field from another. Defaults to
 	// DefaultDelimiter.
