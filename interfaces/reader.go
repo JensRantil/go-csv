@@ -3,7 +3,7 @@
 
 // Interfaces shared among go-csv and the Go standard library's encoding/csv.
 // Can be used to easily use go-csv as a drop-in replacement for the latter.
-package csv
+package interfaces
 
 // A helper interface for a general CSV reader. Conforms to encoding/csv Reader
 // in the standard Go library as well as the Reader implemented by go-csv.

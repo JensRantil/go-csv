@@ -1,17 +1,14 @@
 // Copyright 2014 Jens Rantil. All rights reserved.  Use of this source code is
 // governed by a BSD-style license that can be found in the LICENSE file.
 
-// +build go1.1
+// +build !go1.1
 
-package csv
+package interfaces
 
 // A helper interface for a general CSV writer. Conforms to encoding/csv Writer
 // in the standard go library as well as the Writer implemented by this
 // package.
 type Writer interface {
-	// Currently no errors are possible.
-	Error() error
-
 	// Flush writes any buffered data to the underlying io.Writer.
 	// To check if an error occurred during the Flush, call Error.
 	Flush()

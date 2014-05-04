@@ -1,7 +1,7 @@
 // Copyright 2014 Jens Rantil. All rights reserved.  Use of this source code is
 // governed by a BSD-style license that can be found in the LICENSE file.
 
-package csv
+package interfaces
 
 import (
 	"bytes"
@@ -10,14 +10,14 @@ import (
 	"testing"
 )
 
-func TestWriterInterface(t *testing.T) {
+func TestReaderInterface(t *testing.T) {
 	t.Parallel()
 
-	var iface Writer
-	iface = thiscsv.NewWriter(new(bytes.Buffer))
-	iface = thiscsv.NewDialectWriter(new(bytes.Buffer), thiscsv.Dialect{})
-	iface = oldcsv.NewWriter(new(bytes.Buffer))
+	var iface Reader
+	iface = thiscsv.NewReader(new(bytes.Buffer))
+	iface = thiscsv.NewDialectReader(new(bytes.Buffer), thiscsv.Dialect{})
+	iface = oldcsv.NewReader(new(bytes.Buffer))
 
 	// To get rid of compile-time warning that this variable is not used.
-	iface.Flush()
+	iface.Read()
 }
