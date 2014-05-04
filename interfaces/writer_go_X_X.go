@@ -9,7 +9,8 @@ package interfaces
 // in the standard go library as well as the Writer implemented by this
 // package.
 type Writer interface {
-	// Currently no errors are possible.
+  // Error reports any error that has occurred during a previous Write or
+  // Flush.
 	Error() error
 
 	// Flush writes any buffered data to the underlying io.Writer.
