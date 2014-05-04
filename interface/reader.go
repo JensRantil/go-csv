@@ -5,7 +5,7 @@
 // Can be used to easily use go-csv as a drop-in replacement for the latter.
 package csv
 
-// A helper interface for a general CSV reader. Adheres to encoding/csv Reader
+// A helper interface for a general CSV reader. Conforms to encoding/csv Reader
 // in the standard Go library as well as the Reader implemented by go-csv.
 type Reader interface {
 	// Read reads one record from r. The record is a slice of strings with each

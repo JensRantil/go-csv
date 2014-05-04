@@ -5,7 +5,7 @@
 
 package csv
 
-// A helper interface for a general CSV writer. Adheres to encoding/csv Writer
+// A helper interface for a general CSV writer. Conforms to encoding/csv Writer
 // in the standard go library as well as the Writer implemented by this
 // package.
 type Writer interface {
