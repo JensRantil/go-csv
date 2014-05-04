@@ -52,11 +52,18 @@ func (u *unReader) NextIsString(s string) (bool, error) {
 	return strings.HasPrefix(u.b.String(), s), nil
 }
 
+// A Reader reads records from a CSV-encoded file.
+//
+// Can be created by calling either NewReader or using NewDialectReader.
 type Reader struct {
 	opts Dialect
 	r    *unReader
 }
 
+// Creates a reader that conforms to RFC 4180 and behaves identical as a
+// encoding/csv.Reader.
+//
+// See `Default*` constants for default dialect used.
 func NewReader(r io.Reader) *Reader {
 	opts := Dialect{}
 	opts.setDefaults()

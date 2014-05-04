@@ -9,12 +9,18 @@ import (
 	"strings"
 )
 
+// A Writer writes records to a CSV encoded file.
+//
+// Can be created by calling either NewWriter or using NewDialectWriter.
 type Writer struct {
 	opts Dialect
 	w    *bufio.Writer
 }
 
-// Create a writer that adheres to the Golang CSV writer.
+// Create a writer that conforms to RFC 4180 and behaves identical as a
+// encoding/csv.Reader.
+//
+// See `Default*` constants for default dialect used.
 func NewWriter(w io.Writer) Writer {
 	opts := Dialect{}
 	opts.setDefaults()

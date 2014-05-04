@@ -12,17 +12,19 @@ import (
 // Values Dialect.Quoting can take.
 const (
 	QuoteDefault    = iota // See DefaultQuoting.
-	QuoteAll        = iota
-	QuoteMinimal    = iota
-	QuoteNonNumeric = iota
-	QuoteNone       = iota
+	QuoteAll        = iota // Quotes around every field.
+	QuoteMinimal    = iota // Quotes when needed.
+	QuoteNonNumeric = iota // Quotes around non-numeric fields.
+
+	// Never quote. Use with care. Could make things unparsable.
+	QuoteNone = iota
 )
 
 // Values Dialect.DoubleQuote can take.
 const (
 	DoubleQuoteDefault = iota // See DefaultDoubleQuote.
-	DoDoubleQuote      = iota
-	NoDoubleQuote      = iota
+	DoDoubleQuote      = iota // Escape using double escape characters.
+	NoDoubleQuote      = iota // Escape using escape character.
 )
 
 // Default dialect.
@@ -36,11 +38,21 @@ const (
 )
 
 type Dialect struct {
-	Delimiter      rune
-	Quoting        int
-	DoubleQuote    int
-	EscapeChar     rune
-	QuoteChar      rune
+	// The delimiter that separates each field from another. Defaults to
+	// DefaultDelimiter.
+	Delimiter rune
+	// What quoting mode to use. Defaults to DefaultQuoting.
+	Quoting int
+	// How to escape quotes. Defaults to DefaultDoubleQuote.
+	DoubleQuote int
+	// Character to use for escaping. Only used if DoubleQuote==NoDoubleQuote.
+	// Defaults to DefaultEscapeChar.
+	EscapeChar rune
+	// Character to use as quotation mark around quoted fields. Defaults to
+	// DefaultQuoteChar.
+	QuoteChar rune
+	// String that separates each record in a CSV file. Defaults to
+	// DefaultLineTerminator.
 	LineTerminator string
 }
 
