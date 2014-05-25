@@ -26,7 +26,14 @@ type DialectBuilder struct {
 // register other flags. Call `flag.Parse()`. A dialect can then be constructed
 // by calling `DialectBuilder.Dialect()`.
 func FromCommandLine() *DialectBuilder {
-	return FromFlagSet(flag.CommandLine)
+	// flag package did not expose the CommandLine variable before Go 1.2. This
+	// is a workaround.
+	p := DialectBuilder{}
+	p.delimiterCharString = flag.String("fields-terminated-by", "\t", "character to terminate fields by")
+	p.quoteCharString = flag.String("fields-optionally-enclosed-by", "\"", "character to enclose fields with when needed")
+	p.escapeCharString = flag.String("fields-escaped-by", "\\", "character to escape special characters with")
+	p.flagSet = nil
+	return &p
 }
 
 // Constructs a CSV Dialect from a specific flagset. Essentially the same as
@@ -44,8 +51,17 @@ func FromFlagSet(f *flag.FlagSet) *DialectBuilder {
 // Construct a Dialect from a FlagSet. Make sure to parse the FlagSet before
 // calling this.
 func (p *DialectBuilder) Dialect() (*csv.Dialect, error) {
-	if !p.flagSet.Parsed() {
-		// Sure, could call flagSet.Parse() here. However, we don't know if the
+	if p.flagSet != nil {
+		// flag package did not expose the CommandLine variable before Go 1.2. This
+		// is a workaround.
+		if !p.flagSet.Parsed() {
+			// Sure, could call flagSet.Parse() here. However, we don't know if the
+			// user would like to parse something else than argv. Therefor, letting the
+			// user decide.
+			return nil, errors.New("FlagSet has not been parsed before calling this function.")
+		}
+	} else if !flag.Parsed() {
+		// Sure, could call flag.Parse() here. However, we don't know if the
 		// user would like to parse something else than argv. Therefor, letting the
 		// user decide.
 		return nil, errors.New("FlagSet has not been parsed before calling this function.")
