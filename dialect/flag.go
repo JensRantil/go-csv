@@ -7,18 +7,18 @@
 package dialect
 
 import (
+	"errors"
 	"flag"
 	csv "github.com/JensRantil/go-csv"
 	"strings"
 	"unicode/utf8"
-  "errors"
 )
 
 type DialectBuilder struct {
-  quoteCharString *string
-  escapeCharString *string
-  delimiterCharString *string
-  flagSet *flag.FlagSet
+	quoteCharString     *string
+	escapeCharString    *string
+	delimiterCharString *string
+	flagSet             *flag.FlagSet
 }
 
 // Construct a CSV Dialect from command line using the `flag` package. This is
@@ -26,33 +26,33 @@ type DialectBuilder struct {
 // register other flags. Call `flag.Parse()`. A dialect can then be constructed
 // by calling `DialectBuilder.Dialect()`.
 func FromCommandLine() *DialectBuilder {
-  return FromFlagSet(flag.CommandLine)
+	return FromFlagSet(flag.CommandLine)
 }
 
 // Constructs a CSV Dialect from a specific flagset. Essentially the same as
 // `FromCommandLine()`, except it supports a custom FlagSet. See
 // `FromCommandLine()` for a description on how to use this one.
 func FromFlagSet(f *flag.FlagSet) *DialectBuilder {
-  p := DialectBuilder{}
-  p.delimiterCharString = f.String("fields-terminated-by", "\t", "character to terminate fields by")
-  p.quoteCharString = f.String("fields-optionally-enclosed-by", "\"", "character to enclose fields with when needed")
-  p.escapeCharString = f.String("fields-escaped-by", "\\", "character to escape special characters with")
-  p.flagSet = f
-  return &p
+	p := DialectBuilder{}
+	p.delimiterCharString = f.String("fields-terminated-by", "\t", "character to terminate fields by")
+	p.quoteCharString = f.String("fields-optionally-enclosed-by", "\"", "character to enclose fields with when needed")
+	p.escapeCharString = f.String("fields-escaped-by", "\\", "character to escape special characters with")
+	p.flagSet = f
+	return &p
 }
 
 // Construct a Dialect from a FlagSet. Make sure to parse the FlagSet before
 // calling this.
 func (p *DialectBuilder) Dialect() (*csv.Dialect, error) {
-  if !p.flagSet.Parsed() {
-    // Sure, could call flagSet.Parse() here. However, we don't know if the
-    // user would like to parse something else than argv. Therefor, letting the
-    // user decide.
-    return nil, errors.New("FlagSet has not been parsed before calling this function.")
-  }
+	if !p.flagSet.Parsed() {
+		// Sure, could call flagSet.Parse() here. However, we don't know if the
+		// user would like to parse something else than argv. Therefor, letting the
+		// user decide.
+		return nil, errors.New("FlagSet has not been parsed before calling this function.")
+	}
 
-  // `FlagSet`s don't have a rune type. Using string instead, but that adds
-  // some manual error checking.
+	// `FlagSet`s don't have a rune type. Using string instead, but that adds
+	// some manual error checking.
 	if utf8.RuneCountInString(*p.quoteCharString) > 1 {
 		return nil, errors.New("-fields-optionally-enclosed-by can't be more than one character.")
 	}
@@ -76,5 +76,5 @@ func (p *DialectBuilder) Dialect() (*csv.Dialect, error) {
 		DoubleQuote: csv.NoDoubleQuote,
 	}
 
-  return &dialect, nil
+	return &dialect, nil
 }
