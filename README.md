@@ -58,19 +58,12 @@ To modify CSV dialect, have a look at `csv.Dialect`,
 changing:
 
 * separator/delimiter.
-
 * quoting modes:
-  
   * Always quote.
-   
   * Never quote.
-   
   * Quote when needed (minimal quoting).
-
   * Quote all non-numerical fields.
-
 * line terminator.
-
 * how quote character escaping should be done - using double escape, or using a
   custom escape character.
 
