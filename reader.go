@@ -92,6 +92,16 @@ func (r *Reader) Read() ([]string, error) {
 			return record, err
 		} else {
 			r.skipDelimiter()
+
+			// A line terminator follows immediately after a delimiter.
+			if nextIsLineTerminator, _ := r.nextIsLineTerminator(); nextIsLineTerminator {
+				// Skipping so that next read call is good to go.
+				err = r.skipLineTerminator()
+				// Error is not expected since it should be in the Unreader buffer, but
+				// might as well return it just in case.
+				record = append(record, "")
+				return record, err
+			}
 		}
 	}
 
