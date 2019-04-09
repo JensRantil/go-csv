@@ -11,8 +11,6 @@ Go standard library.
 Examples
 --------
 
-Writing
-~~~~~~~
 Here's a basic writing example:
 
 ```go
@@ -32,8 +30,6 @@ w.Flush()
 // output.csv will now contains the line "a b c" with a trailing newline.
 ```
 
-Reading
-~~~~~~~
 Here's a basic reading example:
 
 ```go
