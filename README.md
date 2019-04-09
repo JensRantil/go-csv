@@ -13,43 +13,47 @@ Examples
 
 Writing
 ~~~~~~~
-Here's a basic writing example::
+Here's a basic writing example:
 
-    f, err := os.Create("output.csv")
-    checkError(err)
-    defer func() {
-      err := f.Close()
-      checkError(err)
-    }
-    w := NewWriter(f)
-    w.Write([]string{
-      "a",
-      "b",
-      "c",
-    })
-    w.Flush()
-    // output.csv will now contains the line "a b c" with a trailing newline.
+```go
+f, err := os.Create("output.csv")
+checkError(err)
+defer func() {
+  err := f.Close()
+  checkError(err)
+}
+w := NewWriter(f)
+w.Write([]string{
+  "a",
+  "b",
+  "c",
+})
+w.Flush()
+// output.csv will now contains the line "a b c" with a trailing newline.
+```
 
 Reading
 ~~~~~~~
-Here's a basic reading example::
+Here's a basic reading example:
 
-    f, err := os.Open('myfile.csv')
-    checkError(err)
-    defer func() {
-      err := f.Close()
-      checkError(err)
-    }
+```go
+f, err := os.Open('myfile.csv')
+checkError(err)
+defer func() {
+  err := f.Close()
+  checkError(err)
+}
 
-    r := NewReader(f)
-    for {
-      fields, err := r.Read()
-      if err == io.EOF {
-        break
-      }
-      checkOtherErrors(err)
-      handleFields(fields)
-    }
+r := NewReader(f)
+for {
+  fields, err := r.Read()
+  if err == io.EOF {
+    break
+  }
+  checkOtherErrors(err)
+  handleFields(fields)
+}
+```
 
 CSV dialects
 ------------
@@ -68,9 +72,9 @@ changing:
   custom escape character.
 
 Have a look at [the
-documentation](http://godoc.org/github.com/JensRantil/go-csv) `csv_test.go` for
-example on how to use these. All values above have sane defaults (that makes
-the module behave the same as the `csv` module in the Go standard library).
+documentation](http://godoc.org/github.com/JensRantil/go-csv) in `csv_test.go`
+for example on how to use these. All values above have sane defaults (that
+makes the module behave the same as the `csv` module in the Go standard library).
 
 Documentation
 -------------
