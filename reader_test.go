@@ -15,30 +15,6 @@ import (
 	"github.com/JensRantil/go-csv/interfaces"
 )
 
-func TestUnReader(t *testing.T) {
-	t.Parallel()
-
-	b := new(bytes.Buffer)
-	b.WriteString("a,b,c\n")
-	r := newUnreader(b)
-	if ru, _, _ := r.ReadRune(); ru != 'a' {
-		t.Error("Unexpected char:", ru, "Expected:", 'a')
-	}
-	if ok, _ := r.NextIsString(",b,c"); !ok {
-		t.Error("Unexpected next string.")
-	}
-	r.UnreadRune('d')
-	if ok, _ := r.NextIsString("d,b,c"); !ok {
-		t.Error("Unreading failed.")
-	}
-	if ok, _ := r.NextIsString("b,c"); ok {
-		t.Error("Unexpected next string.")
-	}
-	if ru, _, _ := r.ReadRune(); ru != 'd' {
-		t.Error("Unexpected char:", ru, "Expected:", 'd')
-	}
-}
-
 func testReadingSingleLine(t *testing.T, r *Reader, expected []string) error {
 	record, err := r.Read()
 	if c := len(record); c != len(expected) {

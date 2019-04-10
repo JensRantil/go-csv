@@ -7,57 +7,15 @@ import (
 	"bufio"
 	"bytes"
 	"io"
-	"strings"
 	"unicode/utf8"
 )
-
-// bufio that supports putting stuff back into it.
-type unReader struct {
-	r *bufio.Reader
-	b *bytes.Buffer
-}
-
-func newUnreader(r io.Reader) *unReader {
-	return &unReader{
-		r: bufio.NewReader(r),
-		b: new(bytes.Buffer),
-	}
-}
-
-func (u *unReader) ReadRune() (rune, int, error) {
-	if u.b.Len() > 0 {
-		return u.b.ReadRune()
-	}
-	return u.r.ReadRune()
-}
-
-func (u *unReader) UnreadRune(r rune) {
-	// Poor man's prepend
-	var tmpBuf bytes.Buffer
-	tmpBuf.WriteRune(r)
-	tmpBuf.ReadFrom(u.b)
-
-	u.b = &tmpBuf
-}
-
-func (u *unReader) NextIsString(s string) (bool, error) {
-	// Fill up bytes in buffer
-	for u.b.Len() < len(s) {
-		r, _, err := u.r.ReadRune()
-		if err != nil {
-			return false, err
-		}
-		u.b.WriteRune(r)
-	}
-	return strings.HasPrefix(u.b.String(), s), nil
-}
 
 // A Reader reads records from a CSV-encoded file.
 //
 // Can be created by calling either NewReader or using NewDialectReader.
 type Reader struct {
 	opts Dialect
-	r    *unReader
+	r    *bufio.Reader
 }
 
 // Creates a reader that conforms to RFC 4180 and behaves identical as a
@@ -75,7 +33,7 @@ func NewDialectReader(r io.Reader, opts Dialect) *Reader {
 	opts.setDefaults()
 	return &Reader{
 		opts: opts,
-		r:    newUnreader(r),
+		r:    bufio.NewReader(r),
 	}
 }
 
@@ -141,7 +99,7 @@ func (r *Reader) readField() (string, error) {
 	}
 
 	// Let the next individual reader functions handle this.
-	r.r.UnreadRune(char)
+	r.r.UnreadRune()
 
 	if char == r.opts.QuoteChar {
 		return r.readQuotedField()
@@ -150,11 +108,18 @@ func (r *Reader) readField() (string, error) {
 }
 
 func (r *Reader) nextIsLineTerminator() (bool, error) {
-	return r.r.NextIsString(r.opts.LineTerminator)
+	return r.nextIsString(r.opts.LineTerminator)
 }
 
 func (r *Reader) nextIsDelimiter() (bool, error) {
-	return r.r.NextIsString(string(r.opts.Delimiter))
+	return r.nextIsString(string(r.opts.Delimiter))
+}
+
+func (r *Reader) nextIsString(s string) (bool, error) {
+	bs := []byte(s)
+	n := len(bs)
+	nextBytes, err := r.r.Peek(n)
+	return bytes.Equal(nextBytes, bs), err
 }
 
 func (r *Reader) skipLineTerminator() error {
@@ -199,7 +164,7 @@ func (r *Reader) readQuotedField() (string, error) {
 				if char == r.opts.QuoteChar {
 					s.WriteRune(char)
 				} else {
-					r.r.UnreadRune(char)
+					r.r.UnreadRune()
 					return s.String(), nil
 				}
 			case NoDoubleQuote:
@@ -239,7 +204,7 @@ func (r *Reader) readUnquotedField() (string, error) {
 
 			// Putting it back for the outer loop to read separators. This makes more
 			// compatible with readQuotedField().
-			r.r.UnreadRune(char)
+			r.r.UnreadRune()
 
 			return s.String(), err
 		} else {
