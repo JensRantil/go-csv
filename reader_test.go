@@ -4,11 +4,15 @@
 package csv
 
 import (
+	"bufio"
 	"bytes"
+	"encoding/csv"
 	"io"
 	"reflect"
 	"testing"
 	"testing/quick"
+
+	"github.com/JensRantil/go-csv/interfaces"
 )
 
 func TestUnReader(t *testing.T) {
@@ -187,4 +191,75 @@ func TestReaderQuick(t *testing.T) {
 	testWriterQuick(t, QuoteAll)
 	testWriterQuick(t, QuoteMinimal)
 	testWriterQuick(t, QuoteNonNumeric)
+}
+
+// A reader that will source an infinitely repeating pattern of bytes.
+type infiniteReader struct {
+	RepeatingPattern []byte
+	position         int
+}
+
+func (r *infiniteReader) Read(p []byte) (n int, err error) {
+	j := 0
+	for j < len(p) {
+		nToCopy := min(len(p)-j, len(r.RepeatingPattern)-r.position)
+		copy(p[j:(j+nToCopy)], r.RepeatingPattern[r.position:(r.position+nToCopy)])
+
+		r.position += nToCopy
+		r.position %= len(r.RepeatingPattern)
+
+		j += nToCopy
+	}
+	return len(p), nil
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	} else {
+		return b
+	}
+}
+
+func TestInfiniteReader(t *testing.T) {
+	testString := "this is a line\n"
+	r := infiniteReader{RepeatingPattern: []byte(testString)}
+	s := bufio.NewScanner(&r)
+	for i := 0; i < 100000; i++ {
+		if !s.Scan() {
+			t.Fatal("Scan() returned false from infinite stream. Iteration:", i)
+		}
+		if ts, expected := s.Text(), testString[0:len(testString)-1]; expected != ts {
+			t.Fatal("Incorrect string:", []byte(ts), "Expected:", []byte(expected))
+		}
+	}
+	if err := s.Err(); err != nil {
+		t.Error("unexpected error:", err)
+	}
+}
+
+const testString = "peter,sweden\n"
+
+func BenchmarkReadingCSV(b *testing.B) {
+	r := infiniteReader{RepeatingPattern: []byte(testString)}
+	csvr := NewReader(&r)
+	benchmark(b, csvr)
+}
+
+func BenchmarkGolangCSV(b *testing.B) {
+	r := infiniteReader{RepeatingPattern: []byte(testString)}
+	csvr := csv.NewReader(&r)
+	benchmark(b, csvr)
+}
+
+func benchmark(b *testing.B, csvr interfaces.Reader) {
+	for i := 0; i < b.N; i++ {
+		r, err := csvr.Read()
+		if err != nil {
+			b.Fatal("Unexpected error:", err)
+		}
+		if len(r) != 2 || r[0] != "peter" || r[1] != "sweden" {
+			b.Fatalf("Unexpected row of len=%d: %s", len(r), r)
+		}
+	}
 }
