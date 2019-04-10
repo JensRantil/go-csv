@@ -29,7 +29,7 @@ const (
 
 // Default dialect.
 const (
-	DefaultDelimiter      = ' '
+	DefaultDelimiter      = ','
 	DefaultQuoting        = QuoteMinimal
 	DefaultDoubleQuote    = DoDoubleQuote
 	DefaultEscapeChar     = '\\'

@@ -63,7 +63,7 @@ func TestBasic(t *testing.T) {
 		"c",
 	})
 	w.Flush()
-	if s := string(b.Bytes()); s != "a b c\n" {
+	if s := string(b.Bytes()); s != "a,b,c\n" {
 		t.Error("Unexpected output:", s)
 	}
 
@@ -73,7 +73,7 @@ func TestBasic(t *testing.T) {
 		"f",
 	})
 	w.Flush()
-	if s := string(b.Bytes()); s != "a b c\nd e f\n" {
+	if s := string(b.Bytes()); s != "a,b,c\nd,e,f\n" {
 		t.Error("Unexpected output:", s)
 	}
 }
@@ -87,17 +87,17 @@ func TestMinimalQuoting(t *testing.T) {
 	if w.opts.Quoting != QuoteMinimal {
 		t.Fatal("Unexpected quoting.")
 	}
-	if s := "b c"; !w.fieldNeedsQuote(s) {
+	if s := "b,c"; !w.fieldNeedsQuote(s) {
 		t.Error("Expected field to need quoting:", s)
 	}
 
 	w.Write([]string{
 		"a",
-		"b c",
+		"b,c",
 		"d",
 	})
 	w.Flush()
-	if s := string(b.Bytes()); s != "a \"b c\" d\n" {
+	if s := string(b.Bytes()); s != "a,\"b,c\",d\n" {
 		t.Error("Unexpected output:", s)
 	}
 }
@@ -116,7 +116,7 @@ func TestNumericQuoting(t *testing.T) {
 		"b c",
 	})
 	w.Flush()
-	if s := string(b.Bytes()); s != "\"a\" 112 \"b c\"\n" {
+	if s := string(b.Bytes()); s != "\"a\",112,\"b c\"\n" {
 		t.Error("Unexpected output:", s)
 	}
 }
@@ -129,10 +129,10 @@ func TestEscaping(t *testing.T) {
 	w.Write([]string{
 		"a",
 		"\"",
-		"b c",
+		"b,c",
 	})
 	w.Flush()
-	if s := string(b.Bytes()); s != "a \"\"\"\" \"b c\"\n" {
+	if s := string(b.Bytes()); s != "a,\"\"\"\",\"b,c\"\n" {
 		t.Error("Unexpected output:", s)
 	}
 
@@ -144,11 +144,11 @@ func TestEscaping(t *testing.T) {
 	w.Write([]string{
 		"a",
 		"\"",
-		"b c",
+		"b,c",
 	})
 	w.Flush()
-	if s := string(b.Bytes()); s != "a \"\\\"\" \"b c\"\n" {
-		t.Error("Unexpected output:", s)
+	if s, expected := string(b.Bytes()), "a,\"\\\"\",\"b,c\"\n"; s != expected {
+		t.Error("Unexpected output:", s, "Expected:", expected)
 	}
 }
 
@@ -160,10 +160,10 @@ func TestNewLineRecord(t *testing.T) {
 	w.Write([]string{
 		"a",
 		"he\nllo",
-		"b c",
+		"b,c",
 	})
 	w.Flush()
-	if s := string(b.Bytes()); s != "a \"he\nllo\" \"b c\"\n" {
-		t.Error("Unexpected output:", s)
+	if s, expected := string(b.Bytes()), "a,\"he\nllo\",\"b,c\"\n"; s != expected {
+		t.Error("Unexpected output:", s, "Expected:", expected)
 	}
 }

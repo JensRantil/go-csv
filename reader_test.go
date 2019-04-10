@@ -65,7 +65,7 @@ func TestReadingSingleLine(t *testing.T) {
 	t.Parallel()
 
 	b := new(bytes.Buffer)
-	b.WriteString("a b c\n")
+	b.WriteString("a,b,c\n")
 	r := NewReader(b)
 
 	err := testReadingSingleLine(t, r, []string{"a", "b", "c"})
@@ -78,7 +78,7 @@ func TestReadingTwoLines(t *testing.T) {
 	t.Parallel()
 
 	b := new(bytes.Buffer)
-	b.WriteString("a b c\nd e f\n")
+	b.WriteString("a,b,c\nd,e,f\n")
 	r := NewReader(b)
 	err := testReadingSingleLine(t, r, []string{"a", "b", "c"})
 	if err != nil {
@@ -107,7 +107,7 @@ func TestReadingCommaDelimitedFile(t *testing.T) {
 	t.Parallel()
 
 	b := new(bytes.Buffer)
-	b.WriteString("a \"b\" c\n")
+	b.WriteString("a,\"b\",c\n")
 	r := NewReader(b)
 
 	err := testReadingSingleLine(t, r, []string{"a", "b", "c"})
@@ -120,7 +120,7 @@ func TestReadAll(t *testing.T) {
 	t.Parallel()
 
 	b := new(bytes.Buffer)
-	b.WriteString("a \"b\" c\nd e \"f\"\n")
+	b.WriteString("a,\"b\",c\nd,e,\"f\"\n")
 	r := NewReader(b)
 
 	data, err := r.ReadAll()
