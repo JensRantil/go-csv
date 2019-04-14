@@ -14,9 +14,11 @@ import (
 //
 // Can be created by calling either NewReader or using NewDialectReader.
 type Reader struct {
-	opts   Dialect
-	r      *bufio.Reader
-	tmpBuf bytes.Buffer
+	opts                    Dialect
+	r                       *bufio.Reader
+	tmpBuf                  bytes.Buffer
+	optimizedDelimiter      []byte
+	optimizedLineTerminator []byte
 }
 
 // Creates a reader that conforms to RFC 4180 and behaves identical as a
@@ -33,8 +35,10 @@ func NewReader(r io.Reader) *Reader {
 func NewDialectReader(r io.Reader, opts Dialect) *Reader {
 	opts.setDefaults()
 	return &Reader{
-		opts: opts,
-		r:    bufio.NewReader(r),
+		opts:                    opts,
+		r:                       bufio.NewReader(r),
+		optimizedDelimiter:      []byte(string(opts.Delimiter)),
+		optimizedLineTerminator: []byte(opts.LineTerminator),
 	}
 }
 
@@ -109,15 +113,14 @@ func (r *Reader) readField() (string, error) {
 }
 
 func (r *Reader) nextIsLineTerminator() (bool, error) {
-	return r.nextIsString(r.opts.LineTerminator)
+	return r.nextIsBytes(r.optimizedLineTerminator)
 }
 
 func (r *Reader) nextIsDelimiter() (bool, error) {
-	return r.nextIsString(string(r.opts.Delimiter))
+	return r.nextIsBytes(r.optimizedDelimiter)
 }
 
-func (r *Reader) nextIsString(s string) (bool, error) {
-	bs := []byte(s)
+func (r *Reader) nextIsBytes(bs []byte) (bool, error) {
 	n := len(bs)
 	nextBytes, err := r.r.Peek(n)
 	return bytes.Equal(nextBytes, bs), err
