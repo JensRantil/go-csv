@@ -14,8 +14,9 @@ import (
 //
 // Can be created by calling either NewReader or using NewDialectReader.
 type Reader struct {
-	opts Dialect
-	r    *bufio.Reader
+	opts   Dialect
+	r      *bufio.Reader
+	tmpBuf bytes.Buffer
 }
 
 // Creates a reader that conforms to RFC 4180 and behaves identical as a
@@ -146,7 +147,8 @@ func (r *Reader) readQuotedField() (string, error) {
 		panic("Expected first character to be quote character.")
 	}
 
-	s := bytes.Buffer{}
+	s := &r.tmpBuf
+	defer r.tmpBuf.Reset() // TODO: Not using defer here is faster.
 	for {
 		char, _, err := r.r.ReadRune()
 		if err != nil {
@@ -194,7 +196,8 @@ func (r *Reader) readQuotedField() (string, error) {
 
 func (r *Reader) readUnquotedField() (string, error) {
 	// TODO: Use bytes.Buffer
-	s := bytes.Buffer{}
+	s := &r.tmpBuf
+	defer r.tmpBuf.Reset() // TODO: Not using defer here is faster.
 	for {
 		char, _, err := r.r.ReadRune()
 		if err != nil || char == r.opts.Delimiter {
