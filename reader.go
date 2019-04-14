@@ -127,17 +127,12 @@ func (r *Reader) nextIsBytes(bs []byte) (bool, error) {
 }
 
 func (r *Reader) skipLineTerminator() error {
-	for _ = range r.opts.LineTerminator {
-		_, _, err := r.r.ReadRune()
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	_, err := r.r.Discard(len(r.optimizedLineTerminator))
+	return err
 }
 
 func (r *Reader) skipDelimiter() error {
-	_, _, err := r.r.ReadRune()
+	_, err := r.r.Discard(len(r.optimizedDelimiter))
 	return err
 }
 
