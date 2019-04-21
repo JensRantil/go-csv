@@ -98,6 +98,10 @@ func (r *Reader) Read() ([]string, error) {
 }
 
 func (r *Reader) readField() (string, error) {
+	if islt, err := r.nextIsLineTerminator(); islt || err != nil {
+		return "", err
+	}
+
 	char, _, err := r.r.ReadRune()
 	if err != nil {
 		return "", err

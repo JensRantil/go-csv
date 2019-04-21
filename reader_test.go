@@ -9,6 +9,7 @@ import (
 	"encoding/csv"
 	"io"
 	"reflect"
+	"strings"
 	"testing"
 	"testing/quick"
 
@@ -167,6 +168,34 @@ func TestReaderQuick(t *testing.T) {
 	testWriterQuick(t, QuoteAll)
 	testWriterQuick(t, QuoteMinimal)
 	testWriterQuick(t, QuoteNonNumeric)
+}
+
+func TestEmptyLastField(t *testing.T) {
+	in := `"Rob","Pike",
+Ken,Thompson,ken
+`
+	r := csv.NewReader(strings.NewReader(in))
+
+	var out [][]string
+	for {
+		record, err := r.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Error(err)
+		}
+		out = append(out, record)
+	}
+
+	expected := [][]string{
+		{"Rob", "Pike", ""},
+		{"Ken", "Thompson", "ken"},
+	}
+
+	if !reflect.DeepEqual(out, expected) {
+		t.Errorf("Output differed from expected.\nout=%s\nexpected=%s", out, expected)
+	}
 }
 
 // A reader that will source an infinitely repeating pattern of bytes.
