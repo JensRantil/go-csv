@@ -26,9 +26,7 @@ type Reader struct {
 //
 // See `Default*` constants for default dialect used.
 func NewReader(r io.Reader) *Reader {
-	opts := Dialect{}
-	opts.setDefaults()
-	return NewDialectReader(r, opts)
+	return NewDialectReader(r, Dialect{})
 }
 
 // Create a custom CSV reader.

@@ -22,12 +22,7 @@ type Writer struct {
 //
 // See `Default*` constants for default dialect used.
 func NewWriter(w io.Writer) Writer {
-	opts := Dialect{}
-	opts.setDefaults()
-	return Writer{
-		opts: opts,
-		w:    bufio.NewWriter(w),
-	}
+	return NewDialectWriter(w, Dialect{})
 }
 
 // Create a custom CSV writer.
