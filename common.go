@@ -9,22 +9,28 @@ import (
 	"unicode"
 )
 
-// Values Dialect.Quoting can take.
+// QuoteMode defines how quotes should be handled.
+type QuoteMode int
+
+// Values QuoteMode can take.
 const (
-	QuoteDefault    = iota // See DefaultQuoting.
-	QuoteAll        = iota // Quotes around every field.
-	QuoteMinimal    = iota // Quotes when needed.
-	QuoteNonNumeric = iota // Quotes around non-numeric fields.
+	QuoteDefault    QuoteMode = iota // See DefaultQuoting.
+	QuoteAll                  = iota // Quotes around every field.
+	QuoteMinimal              = iota // Quotes when needed.
+	QuoteNonNumeric           = iota // Quotes around non-numeric fields.
 
 	// Never quote. Use with care. Could make things unparsable.
 	QuoteNone = iota
 )
 
-// Values Dialect.DoubleQuote can take.
+// DoubleQuoteMode defined how quote excaping should be done.
+type DoubleQuoteMode int
+
+// Values DoubleQuoteMode can take.
 const (
-	DoubleQuoteDefault = iota // See DefaultDoubleQuote.
-	DoDoubleQuote      = iota // Escape using double escape characters.
-	NoDoubleQuote      = iota // Escape using escape character.
+	DoubleQuoteDefault DoubleQuoteMode = iota // See DefaultDoubleQuote.
+	DoDoubleQuote                      = iota // Escape using double escape characters.
+	NoDoubleQuote                      = iota // Escape using escape character.
 )
 
 // Default dialect.
@@ -45,9 +51,9 @@ type Dialect struct {
 	// DefaultDelimiter.
 	Delimiter rune
 	// What quoting mode to use. Defaults to DefaultQuoting.
-	Quoting int
+	Quoting QuoteMode
 	// How to escape quotes. Defaults to DefaultDoubleQuote.
-	DoubleQuote int
+	DoubleQuote DoubleQuoteMode
 	// Character to use for escaping. Only used if DoubleQuote==NoDoubleQuote.
 	// Defaults to DefaultEscapeChar.
 	EscapeChar rune

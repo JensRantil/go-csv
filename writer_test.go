@@ -10,7 +10,7 @@ import (
 )
 
 // Execute a quicktest for a specific quoting.
-func testWriterQuick(t *testing.T, quoting int) {
+func testWriterQuick(t *testing.T, quoting QuoteMode) {
 	f := func(records [][]string, doubleQuote bool, escapeChar, del, quoteChar rune, lt string) bool {
 		b1 := new(bytes.Buffer)
 		dialect := Dialect{

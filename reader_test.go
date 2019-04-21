@@ -125,7 +125,7 @@ func TestReadAll(t *testing.T) {
 	}
 }
 
-func testReaderQuick(t *testing.T, quoting int) {
+func testReaderQuick(t *testing.T, quoting QuoteMode) {
 	f := func(records [][]string, doubleQuote bool, escapeChar, del, quoteChar rune, lt string) bool {
 		dialect := Dialect{
 			Quoting:        quoting,
