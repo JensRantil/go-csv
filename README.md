@@ -63,6 +63,7 @@ changing:
   * Never quote.
   * Quote when needed (minimal quoting).
   * Quote all non-numerical fields.
+  * Quote all non-empty, non-numerical fields.
 * line terminator.
 * how quote character escaping should be done - using double escape, or using a
   custom escape character.

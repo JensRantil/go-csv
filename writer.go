@@ -65,6 +65,8 @@ func (w Writer) fieldNeedsQuote(field string) bool {
 		return true
 	case QuoteNonNumeric:
 		return !isNumeric(field)
+	case QuoteNonNumericNonEmpty:
+		return !(isNumeric(field) || isEmpty(field))
 	case QuoteMinimal:
 		// TODO: Can be improved by making a single search with trie.
 		// See https://docs.python.org/2/library/csv.html#csv.QUOTE_MINIMAL for info on this.
