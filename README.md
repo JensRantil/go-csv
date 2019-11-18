@@ -86,6 +86,5 @@ except changing separator and partially line termination.
 
 Who developed this?
 -------------------
-I'm Jens Rantil. Have a look at [my
-blog](http://jensrantil.github.io/pages/about-jens.html) for more info on what
-I'm working on.
+I'm Jens Rantil. Have a look at [my blog](http://jensrantil.github.io) for
+more info on what I'm working on.
