@@ -268,3 +268,19 @@ func benchmark(b *testing.B, csvr interfaces.Reader) {
 		}
 	}
 }
+
+func TestReadingWithComments(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	b.WriteString("#-,-,-\n   #aa\na,b,c\n	#aa#aaaa\nd,e,f\n")
+	r := NewReader(b)
+	err := testReadingSingleLine(t, r, []string{"a", "b", "c"})
+	if err != nil {
+		t.Error("Unexpected error:", err)
+	}
+	err = testReadingSingleLine(t, r, []string{"d", "e", "f"})
+	if err != nil && err != io.EOF {
+		t.Error("Expected EOF, but got:", err)
+	}
+}

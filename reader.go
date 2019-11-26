@@ -68,6 +68,10 @@ func (r *Reader) Read() ([]string, error) {
 	// faster preallocation.
 	record := make([]string, 0, 2)
 
+	if err := r.skipComments(); err != nil {
+		return record, err
+	}
+
 	for {
 		field, err := r.readField()
 		record = append(record, field)
@@ -131,6 +135,51 @@ func (r *Reader) nextIsBytes(bs []byte) (bool, error) {
 func (r *Reader) skipLineTerminator() error {
 	_, err := r.r.Discard(len(r.optimizedLineTerminator))
 	return err
+}
+
+func (r *Reader) skipComments() error {
+	var n = 1
+	var isComment bool
+	for {
+		nextBytes, err := r.r.Peek(n)
+		if err != nil {
+			return err
+		}
+
+		switch rune(nextBytes[n-1]) {
+		case ' ', '\t': //skip space
+			if !isComment {
+				n += 1
+				continue
+			} else {
+				return nil
+			}
+
+		case r.opts.Comment:
+			_, err := r.r.Discard(n)
+			if err != nil {
+				return err
+			}
+			n = 1
+			isComment = true
+
+		default:
+			if !isComment {
+				return nil
+			} else if nextIsLineTerminator, _ := r.nextIsLineTerminator(); nextIsLineTerminator {
+				err = r.skipLineTerminator()
+				if err != nil {
+					return err
+				}
+				isComment = false
+			} else if _, err := r.r.Discard(n); err != nil {
+				return err
+			}
+			n = 1 //after discard or skip LineTermintator, reset n
+		}
+	}
+	//skip until LineTerminator
+	return nil
 }
 
 func (r *Reader) skipDelimiter() error {
