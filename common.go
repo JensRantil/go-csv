@@ -104,7 +104,7 @@ func isNumeric(s string) bool {
 		return false
 	}
 	for _, r := range s {
-		if !unicode.IsDigit(r) {
+		if r != '.' && !unicode.IsDigit(r) {
 			return false
 		}
 	}

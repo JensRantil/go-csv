@@ -21,6 +21,7 @@ func TestIsNumeric(t *testing.T) {
 		"1",
 		"11",
 		"123456789",
+		"1.2",
 	}
 	for _, item := range numeric {
 		if !isNumeric(item) {
