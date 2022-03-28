@@ -1,3 +1,4 @@
 status = [
-  "continuous-integration/travis-ci/push",
+  "Build",
 ]
+timeout_sec = 120
