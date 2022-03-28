@@ -1,4 +1,4 @@
 status = [
-  "Go / Build (push)",
+  "Build (push)",
 ]
 timeout_sec = 120
