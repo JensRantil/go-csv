@@ -14,10 +14,11 @@ type QuoteMode int
 
 // Values QuoteMode can take.
 const (
-	QuoteDefault    QuoteMode = iota // See DefaultQuoting.
-	QuoteAll                  = iota // Quotes around every field.
-	QuoteMinimal              = iota // Quotes when needed.
-	QuoteNonNumeric           = iota // Quotes around non-numeric fields.
+	QuoteDefault            QuoteMode = iota // See DefaultQuoting.
+	QuoteAll                          = iota // Quotes around every field.
+	QuoteMinimal                      = iota // Quotes when needed.
+	QuoteNonNumeric                   = iota // Quotes around non-numeric fields.
+	QuoteNonNumericNonEmpty           = iota // Quotes around non-numeric or empty fields.
 
 	// Never quote. Use with care. Could make things unparsable.
 	QuoteNone = iota
@@ -109,4 +110,8 @@ func isNumeric(s string) bool {
 		}
 	}
 	return true
+}
+
+func isEmpty(s string) bool {
+	return len(s) == 0
 }

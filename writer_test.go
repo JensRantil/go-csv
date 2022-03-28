@@ -121,6 +121,26 @@ func TestNumericQuoting(t *testing.T) {
 	}
 }
 
+func TestEmptyFieldQuoting(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	dialect := Dialect{
+		Quoting: QuoteNonNumericNonEmpty,
+	}
+	w := NewDialectWriter(b, dialect)
+	w.Write([]string{
+		"a",
+		"112",
+		"",
+		"b c",
+	})
+	w.Flush()
+	if s := string(b.Bytes()); s != "\"a\",112,,\"b c\"\n" {
+		t.Error("Unexpected output:", s)
+	}
+}
+
 func TestEscaping(t *testing.T) {
 	t.Parallel()
 
