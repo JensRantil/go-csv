@@ -2,3 +2,4 @@ status = [
   "Build",
 ]
 timeout_sec = 120
+delete_merged_branches = true
