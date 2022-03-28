@@ -1,4 +1,4 @@
 status = [
-  "Build (push)",
+  "Build",
 ]
 timeout_sec = 120
