@@ -284,3 +284,18 @@ func TestReadingWithComments(t *testing.T) {
 		t.Error("Expected EOF, but got:", err)
 	}
 }
+
+func TestReadingMultipleLineWithQuoteEscaping(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	// a,"b \"c d\ne\"", f
+	b.WriteString(`a,"b \"c d
+e\"",f` + "\n")
+	r := NewReader(b)
+
+	err := testReadingSingleLine(t, r, []string{"a", `b "c d` + "\n" + `e"`, "f"})
+	if err != nil && err != io.EOF {
+		t.Error("Unexpected error:", err)
+	}
+}
