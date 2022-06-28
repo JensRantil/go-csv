@@ -198,13 +198,16 @@ func (r *Reader) readQuotedField() (string, error) {
 
 	s := &r.tmpBuf
 	defer r.tmpBuf.Reset() // TODO: Not using defer here is faster.
+	var previousChar rune
 	for {
 		char, _, err := r.r.ReadRune()
 		if err != nil {
 			return s.String(), err
 		}
-		if char != r.opts.QuoteChar {
-			s.WriteRune(char)
+		if char != r.opts.QuoteChar || previousChar == r.opts.EscapeChar {
+			if char != r.opts.EscapeChar {
+				s.WriteRune(char)
+			}
 		} else {
 			switch r.opts.DoubleQuote {
 			case DoDoubleQuote:
@@ -237,6 +240,7 @@ func (r *Reader) readQuotedField() (string, error) {
 				panic("Unrecognized double quote mode.")
 			}
 		}
+		previousChar = char
 	}
 
 	// Required by Go 1.0 to compile. Unreachable code.
