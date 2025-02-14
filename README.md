@@ -1,6 +1,6 @@
 CSV
 ===
-[![Build Status](https://secure.travis-ci.org/JensRantil/go-csv.png?branch=master)](http://travis-ci.org/JensRantil/go-csv) [![Go Report Card](https://goreportcard.com/badge/github.com/JensRantil/go-csv)](https://goreportcard.com/report/github.com/JensRantil/go-csv) [![GoDoc](https://godoc.org/github.com/JensRantil/go-csv?status.svg)](https://godoc.org/github.com/JensRantil/go-csv)
+(https://goreportcard.com/badge/github.com/JensRantil/go-csv)](https://goreportcard.com/report/github.com/JensRantil/go-csv) [![GoDoc](https://godoc.org/github.com/JensRantil/go-csv?status.svg)](https://godoc.org/github.com/JensRantil/go-csv)
 
 A Go [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) implementation
 inspired by [Python's CSV module](https://docs.python.org/2/library/csv.html).
