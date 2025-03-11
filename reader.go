@@ -7,7 +7,6 @@ import (
 	"bufio"
 	"bytes"
 	"io"
-	"unicode/utf8"
 )
 
 // A Reader reads records from a CSV-encoded file.
@@ -203,7 +202,13 @@ func (r *Reader) readQuotedField() (string, error) {
 		if err != nil {
 			return s.String(), err
 		}
-		if char != r.opts.QuoteChar {
+		if char == r.opts.EscapeChar && r.opts.DoubleQuote == NoDoubleQuote {
+			nextChar, _, err := r.r.ReadRune()
+			if err != nil {
+				panic("Field contained malformed rune.")
+			}
+			s.WriteRune(nextChar)
+		} else if char != r.opts.QuoteChar {
 			s.WriteRune(char)
 		} else {
 			switch r.opts.DoubleQuote {
@@ -219,20 +224,7 @@ func (r *Reader) readQuotedField() (string, error) {
 					return s.String(), nil
 				}
 			case NoDoubleQuote:
-				if s.Len() == 0 {
-					return s.String(), nil
-				}
-				lastRune, size := utf8.DecodeLastRuneInString(s.String())
-				if lastRune == utf8.RuneError && size == 1 {
-					panic("Field contained malformed rune.")
-				}
-				if lastRune == r.opts.EscapeChar {
-					// Replace previous escape character.
-					s.Truncate(s.Len() - utf8.RuneLen(char))
-					s.WriteRune(char)
-				} else {
-					return s.String(), nil
-				}
+				return s.String(), nil
 			default:
 				panic("Unrecognized double quote mode.")
 			}
