@@ -187,3 +187,21 @@ func TestNewLineRecord(t *testing.T) {
 		t.Error("Unexpected output:", s, "Expected:", expected)
 	}
 }
+
+func TestWritingWithEscapedEscapeCharacter(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	w := NewDialectWriter(b, Dialect{
+		DoubleQuote: NoDoubleQuote,
+	})
+	w.Write([]string{
+		"1",
+		`\"\"`,
+		"2",
+	})
+	w.Flush()
+	if s, expected := string(b.Bytes()), `1,"\\\"\\\"",2`+"\n"; s != expected {
+		t.Error("Unexpected output:", s, "Expected:", expected)
+	}
+}

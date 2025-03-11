@@ -284,3 +284,17 @@ func TestReadingWithComments(t *testing.T) {
 		t.Error("Expected EOF, but got:", err)
 	}
 }
+
+func TestReadingWithEscapedEscapeCharacter(t *testing.T) {
+	t.Parallel()
+
+	b := new(bytes.Buffer)
+	b.WriteString(`1,"\\\"\\\"",2` + "\n")
+	r := NewDialectReader(b, Dialect{
+		DoubleQuote: NoDoubleQuote,
+	})
+	err := testReadingSingleLine(t, r, []string{"1", `\"\"`, "2"})
+	if err != nil {
+		t.Error("Unexpected error:", err)
+	}
+}
